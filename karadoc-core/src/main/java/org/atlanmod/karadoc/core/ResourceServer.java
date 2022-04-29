@@ -4,5 +4,6 @@ import java.util.List;
 
 public interface ResourceServer {
 
-    List<SavedResource> availableResourced();
+    List<SavedResource> getAvailableResourced();
+    SavedResource getByID(RessourceID id, FilterID filterUri);
 }

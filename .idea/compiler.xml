@@ -6,11 +6,25 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="server" />
+        <module name="rest" />
+        <module name="core" />
+        <module name="karadoc-core" />
+        <module name="karadoc-ModelLoader" />
         <module name="karadoc-server" />
         <module name="karadoc-rest" />
         <module name="karadoc-websockets" />
-        <module name="karadoc-core" />
+        <module name="websockets" />
       </profile>
     </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="core" options="-parameters" />
+      <module name="karadoc-ModelLoader" options="-parameters" />
+      <module name="rest" options="-parameters" />
+      <module name="server" options="-parameters" />
+      <module name="websockets" options="-parameters" />
+    </option>
   </component>
 </project>

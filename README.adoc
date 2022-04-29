@@ -1,0 +1,8 @@
+= Karadoc
+
+The Atlanmod-Resource-Server
+
+[cite, Jean-Christophe Hembert, Kaamelott, Livre II, Sept cent quarante-quatre, écrit par Alexandre Astier.]
+____
+Par exemple, vous prenez aujourd’hui. Vous comptez sept jours. Ça vous emmène dans une semaine. Et bien on sera exactement le même jour qu’aujourd’hui… À une vache près, hein… C’est pas une science exacte.
+____

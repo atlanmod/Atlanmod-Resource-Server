@@ -1,1 +1,0 @@
-# Atlanmod-Resource-Server

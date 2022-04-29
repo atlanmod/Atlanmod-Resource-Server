@@ -11,6 +11,7 @@
         <module name="core" />
         <module name="karadoc-core" />
         <module name="karadoc-ModelLoader" />
+        <module name="Loader" />
         <module name="karadoc-server" />
         <module name="karadoc-rest" />
         <module name="karadoc-websockets" />
@@ -20,6 +21,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Loader" options="-parameters" />
       <module name="core" options="-parameters" />
       <module name="karadoc-ModelLoader" options="-parameters" />
       <module name="rest" options="-parameters" />

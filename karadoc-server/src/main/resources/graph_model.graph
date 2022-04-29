@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph:Graph xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:graph="http://www.example.org/graph">
+  <nodes name="n1" fromEdge="//@edges.0 //@edges.1"/>
+  <nodes name="n2" toEdge="//@edges.0 //@edges.1"/>
+  <edges name="a" from="//@nodes.0" to="//@nodes.1"/>
+  <edges name="b" from="//@nodes.0" to="//@nodes.1"/>
+</graph:Graph>

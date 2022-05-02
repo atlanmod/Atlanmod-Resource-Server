@@ -1,4 +1,4 @@
-package org.atlanmod.karadoc.ModelLoader;
+package org.atlanmod.karadoc.server;
 
 import org.atlanmod.karadoc.core.ModelLoader;
 import org.eclipse.emf.common.util.URI;
@@ -12,18 +12,19 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
 
 public class KaradocModelLoader implements ModelLoader {
 
-    private static Logger log = LoggerFactory.getLogger(KaradocModelLoader.class);
+    private final static Logger log = LoggerFactory.getLogger(KaradocModelLoader.class);
 
     ResourceSet resourceSet;
     Resource metamodel;
     Resource model;
+
 
     public KaradocModelLoader(File metamodel, File model) {
 
@@ -76,6 +77,7 @@ public class KaradocModelLoader implements ModelLoader {
         registerEPackages(resourceSet, metamodel);
     }
     private void loadModel(File file) throws IOException {
+
 
         this.model = this.resourceSet.createResource(URI.createURI(file.getName()));
         if (model == null) {

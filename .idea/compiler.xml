@@ -11,13 +11,15 @@
         <module name="core" />
         <module name="karadoc-core" />
         <module name="karadoc-ModelLoader" />
-        <module name="Loader" />
         <module name="karadoc-server" />
         <module name="karadoc-rest" />
         <module name="karadoc-websockets" />
         <module name="websockets" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Loader" target="11" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

@@ -1,8 +1,8 @@
 package org.atlanmod.karadoc.server;
 
-import org.atlanmod.karadoc.ModelLoader.KaradocModelLoader;
-import org.atlanmod.karadoc.core.*;
 import org.atlanmod.karadoc.core.Filter.FilterID;
+import org.atlanmod.karadoc.core.ModelLoader;
+import org.atlanmod.karadoc.core.ResourceServer;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.springframework.core.io.ClassPathResource;

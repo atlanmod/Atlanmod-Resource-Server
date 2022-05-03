@@ -1,8 +1,14 @@
 package org.atlanmod.karadoc.websockets;
 
 import org.atlanmod.karadoc.core.ResourceServer;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SpringBootApplication
 public class WebsocketsServer {
 
-    private ResourceServer server;
+    public static void main(String[] args){
+        SpringApplication.run(WebsocketsServer.class, args);
+    }
+
 }

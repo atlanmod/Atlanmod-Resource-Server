@@ -11,11 +11,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Server internal api for endpoint
+ */
 public class KaradocServer implements ResourceServer {
 
+    //FIXME Temporary solution for loading data. In the future a data base shall be used
     ClassPathResource metamodel = new ClassPathResource("graph_metamodel.ecore");
     ClassPathResource model = new ClassPathResource("graph_model.graph");
-
     ModelLoader modelLoader;
 
     public KaradocServer() {

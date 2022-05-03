@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collections;
 
+
 public class KaradocModelLoader implements ModelLoader {
 
     private final static Logger log = LoggerFactory.getLogger(KaradocModelLoader.class);
@@ -100,6 +101,8 @@ public class KaradocModelLoader implements ModelLoader {
         }
     }
 
+
+    //Todo remove this debug method and logger
     private static void logMetamodelInformation(Resource metamodelResource) {
         Iterable<EObject> allContents = metamodelResource::getAllContents;
         for (EObject e : allContents) {
@@ -116,6 +119,7 @@ public class KaradocModelLoader implements ModelLoader {
         }
     }
 
+    //Todo remove this debug method and logger
     private static void logModelInformation(Resource model) {
         Iterable<EObject> allContents = model::getAllContents;
         for (EObject e : allContents) {

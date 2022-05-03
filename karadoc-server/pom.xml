@@ -18,16 +18,12 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.atlanmod.karadoc</groupId>
-            <artifactId>Loader</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.atlanmod.karadoc</groupId>
-            <artifactId>Loader</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
         </dependency>
     </dependencies>
 

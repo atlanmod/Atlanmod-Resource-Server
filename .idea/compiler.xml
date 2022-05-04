@@ -15,9 +15,11 @@
         <module name="karadoc-rest" />
         <module name="karadoc-websockets" />
         <module name="websockets" />
+        <module name="rmi" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="karadoc-rmi" target="11" />
       <module name="Loader" target="11" />
     </bytecodeTargetLevel>
   </component>
@@ -26,7 +28,9 @@
       <module name="Loader" options="-parameters" />
       <module name="core" options="-parameters" />
       <module name="karadoc-ModelLoader" options="-parameters" />
+      <module name="karadoc-rmi" options="-parameters" />
       <module name="rest" options="-parameters" />
+      <module name="rmi" options="-parameters" />
       <module name="server" options="-parameters" />
       <module name="websockets" options="-parameters" />
     </option>

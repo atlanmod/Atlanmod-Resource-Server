@@ -20,6 +20,7 @@
         <module>karadoc-rest</module>
         <module>karadoc-server</module>
         <module>karadoc-websockets</module>
+        <module>karadoc-rmi</module>
     </modules>
 
     <properties>

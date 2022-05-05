@@ -9,6 +9,7 @@
         <module name="server" />
         <module name="rest" />
         <module name="core" />
+        <module name="untitled" />
         <module name="karadoc-core" />
         <module name="karadoc-ModelLoader" />
         <module name="karadoc-server" />
@@ -32,6 +33,7 @@
       <module name="rest" options="-parameters" />
       <module name="rmi" options="-parameters" />
       <module name="server" options="-parameters" />
+      <module name="untitled" options="-parameters" />
       <module name="websockets" options="-parameters" />
     </option>
   </component>

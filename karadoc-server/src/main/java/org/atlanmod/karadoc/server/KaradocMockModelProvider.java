@@ -1,6 +1,6 @@
 package org.atlanmod.karadoc.server;
 
-import org.atlanmod.karadoc.core.ModelLoader;
+import org.atlanmod.karadoc.core.ModelProvider;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -11,6 +11,8 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,16 +20,22 @@ import java.io.IOException;
 import java.util.Collections;
 
 
-public class KaradocModelLoader implements ModelLoader {
+/**
+ * Mock model loader used fur testing purpose
+ */
+@Component("ModelProvider")
+public class KaradocMockModelProvider implements ModelProvider {
 
-    private final static Logger log = LoggerFactory.getLogger(KaradocModelLoader.class);
+    private final static Logger log = LoggerFactory.getLogger(KaradocMockModelProvider.class);
 
-    ResourceSet resourceSet;
-    Resource metamodel;
+
+
+    private final ResourceSet resourceSet;
+    private final Resource metamodel;
     Resource model;
 
 
-    public KaradocModelLoader(File metamodel, File model) {
+    public KaradocMockModelProvider() {
 
         resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry()
@@ -38,14 +46,35 @@ public class KaradocModelLoader implements ModelLoader {
                 .put("graph", new XMIResourceFactoryImpl());
 
         try {
-            loadMetamodel(metamodel);
-            loadModel(model);
+
+            //load dummy file
+            File metamodel = new ClassPathResource("graph_metamodel.ecore").getFile();
+            File model = new ClassPathResource("graph_model.graph").getFile();
+
+            //load metamodel
+            this.metamodel = this.resourceSet.createResource(URI.createURI(metamodel.getName()));
+            if (this.metamodel == null) {
+                throw new RuntimeException("Cannot create the resource for the metamodel");
+            }
+
+            FileInputStream inputStream = new FileInputStream(metamodel);
+            this.metamodel.load(inputStream, Collections.emptyMap());
+            inputStream.close();
+            registerEPackages(resourceSet, this.metamodel);
+
+            //then load model based on previously loaded metamodel
+            this.model = this.resourceSet.createResource(URI.createURI(model.getName()));
+            if (this.model == null) {
+                throw new RuntimeException("Cannot create the resource for the metamodel");
+            }
+
+            FileInputStream inputStream1 = new FileInputStream(model);
+            this.model.load(inputStream1, Collections.emptyMap());
+            inputStream1.close();
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-       // logMetamodelInformation(this.metamodel);
-       // logModelInformation(this.model);
 
     }
 
@@ -64,32 +93,6 @@ public class KaradocModelLoader implements ModelLoader {
         return model;
     }
 
-
-    private void loadMetamodel(File file) throws IOException {
-
-        this.metamodel = this.resourceSet.createResource(URI.createURI(file.getName()));
-        if (metamodel == null) {
-            throw new RuntimeException("Cannot create the resource for the metamodel");
-        }
-
-        FileInputStream inputStream = new FileInputStream(file);
-        metamodel.load(inputStream, Collections.emptyMap());
-        inputStream.close();
-        registerEPackages(resourceSet, metamodel);
-    }
-    private void loadModel(File file) throws IOException {
-
-
-        this.model = this.resourceSet.createResource(URI.createURI(file.getName()));
-        if (model == null) {
-            throw new RuntimeException("Cannot create the resource for the metamodel");
-        }
-
-        FileInputStream inputStream = new FileInputStream(file);
-        model.load(inputStream, Collections.emptyMap());
-        inputStream.close();
-
-    }
 
     private static void registerEPackages(ResourceSet rSet, Resource metamodel) {
         Iterable<EObject> allContents = metamodel::getAllContents;

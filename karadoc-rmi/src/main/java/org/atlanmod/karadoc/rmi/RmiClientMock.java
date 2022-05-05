@@ -1,8 +1,8 @@
 package org.atlanmod.karadoc.rmi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.atlanmod.karadoc.core.ModelLoader;
-import org.atlanmod.karadoc.server.KaradocModelLoader;
+import org.atlanmod.karadoc.core.ModelProvider;
+import org.atlanmod.karadoc.server.KaradocMockModelProvider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.emfjson.jackson.databind.EMFContext;
@@ -31,18 +31,18 @@ public class RmiClientMock {
             ClassPathResource metamodel = new ClassPathResource("graph_metamodel.ecore");
             ClassPathResource model = new ClassPathResource("graph_model.graph");
             //for reading the model
-            final ModelLoader modelLoader = new KaradocModelLoader(metamodel.getFile(),model.getFile());
+            final ModelProvider modelProvider = new KaradocMockModelProvider();
 
             RmiResourceServer access = (RmiResourceServer) Naming.lookup("rmi://localhost:1337/v1");
             //answer = access.getAvailableResourced();
 
-            List<EObject> objects = mapper.reader()
-                    .withAttribute(EMFContext.Attributes.RESOURCE_SET, modelLoader.getModel())
-                    .withAttribute(EMFContext.Attributes.RESOURCE_URI, "src/main/resources/data.json")
-                    .forType(Resource.class)
-                            .readValue(access.getAvailableResourced());
+//            List<EObject> objects = mapper.reader()
+//                    .withAttribute(EMFContext.Attributes.RESOURCE_SET, modelProvider.getModel())
+//                    .withAttribute(EMFContext.Attributes.RESOURCE_URI, "src/main/resources/data.json")
+//                    .forType(Resource.class)
+//                            .readValue(access.getAvailableResourced());
 
-            log.info("Res" + " " + access.getAvailableResourced().toString());
+            log.info("Res" + " " + access.getAvailableResourced());
         }
 
 }

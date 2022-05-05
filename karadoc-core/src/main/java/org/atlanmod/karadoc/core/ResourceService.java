@@ -6,7 +6,7 @@ import org.eclipse.emf.ecore.EObject;
 
 import java.util.List;
 
-public interface ResourceServer {
+public interface ResourceService {
 
     List<EObject> getAvailableResourced();
     EObject getByID(URI id, FilterID filterUri);

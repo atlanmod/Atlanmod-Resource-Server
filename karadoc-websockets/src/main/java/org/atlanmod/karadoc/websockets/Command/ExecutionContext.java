@@ -2,23 +2,35 @@ package org.atlanmod.karadoc.websockets.Command;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.atlanmod.karadoc.server.KaradocServer;
+import org.atlanmod.karadoc.core.ResourceService;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Collection;
 
+/**
+ * Represent the context when executing a websocket command
+ */
 public class ExecutionContext {
-    private final KaradocServer server;
+    /**
+     * Link to internal server API
+     */
+    private final ResourceService server;
+    /**
+     * Emf-json serializer used for serializing server data
+     */
     private final ObjectMapper mapper;
+    /**
+     * List of all user context. Useful for notifying users of an update
+     */
     private final Collection<WebSocketSession> users;
 
-    public ExecutionContext(KaradocServer server, ObjectMapper mapper, Collection<WebSocketSession> users) {
+    public ExecutionContext(ResourceService server, ObjectMapper mapper, Collection<WebSocketSession> users) {
         this.server = server;
         this.mapper = mapper;
         this.users = users;
     }
 
-    public KaradocServer getServer() {
+    public ResourceService getServer() {
         return server;
     }
 

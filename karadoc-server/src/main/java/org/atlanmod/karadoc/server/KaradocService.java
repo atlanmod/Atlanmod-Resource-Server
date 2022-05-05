@@ -1,6 +1,6 @@
 package org.atlanmod.karadoc.server;
 
-import org.atlanmod.karadoc.core.Filter.FilterID;
+import org.atlanmod.karadoc.core.filter.FilterID;
 import org.atlanmod.karadoc.core.ModelProvider;
 import org.atlanmod.karadoc.core.ResourceService;
 import org.eclipse.emf.common.util.URI;

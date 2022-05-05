@@ -1,4 +1,4 @@
-package org.atlanmod.karadoc.websockets.Command;
+package org.atlanmod.karadoc.websockets.command;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

@@ -2,7 +2,7 @@ package org.atlanmod.karadoc.rmi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.atlanmod.karadoc.core.Filter.FilterID;
+import org.atlanmod.karadoc.core.filter.FilterID;
 import org.atlanmod.karadoc.core.ResourceService;
 import org.eclipse.emf.common.util.URI;
 import org.emfjson.jackson.module.EMFModule;
@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.remoting.rmi.RmiServiceExporter;
 import org.springframework.stereotype.Controller;
 
 import java.net.MalformedURLException;
@@ -25,7 +24,7 @@ public class RmiController extends UnicastRemoteObject implements RmiResourceSer
 
     private final ObjectMapper mapper =  EMFModule.setupDefaultMapper();
     private final ResourceService server;
-    Logger log = LoggerFactory.getLogger(RmiController.class);
+    final Logger log = LoggerFactory.getLogger(RmiController.class);
 
 
 

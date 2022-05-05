@@ -3,7 +3,7 @@ package org.atlanmod.karadoc.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.atlanmod.karadoc.core.Filter.FilterID;
+import org.atlanmod.karadoc.core.filter.FilterID;
 import org.atlanmod.karadoc.core.ResourceService;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;

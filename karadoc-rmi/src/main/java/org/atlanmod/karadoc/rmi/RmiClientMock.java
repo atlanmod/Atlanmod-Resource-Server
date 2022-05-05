@@ -3,9 +3,6 @@ package org.atlanmod.karadoc.rmi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.atlanmod.karadoc.core.ModelProvider;
 import org.atlanmod.karadoc.server.KaradocMockModelProvider;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.emfjson.jackson.databind.EMFContext;
 import org.emfjson.jackson.module.EMFModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +11,6 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
-import java.util.List;
 
 public class RmiClientMock {
 

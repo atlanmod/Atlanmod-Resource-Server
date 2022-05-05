@@ -1,6 +1,6 @@
 package org.atlanmod.karadoc.core;
 
-import org.atlanmod.karadoc.core.Filter.FilterID;
+import org.atlanmod.karadoc.core.filter.FilterID;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 

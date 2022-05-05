@@ -1,4 +1,4 @@
-package org.atlanmod.karadoc.websockets.Command;
+package org.atlanmod.karadoc.websockets.command;
 
 import org.atlanmod.karadoc.server.KaradocMockModelProvider;
 import org.slf4j.Logger;

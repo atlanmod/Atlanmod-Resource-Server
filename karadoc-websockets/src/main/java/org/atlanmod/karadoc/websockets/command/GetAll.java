@@ -1,4 +1,4 @@
-package org.atlanmod.karadoc.websockets.Command;
+package org.atlanmod.karadoc.websockets.command;
 
 import org.eclipse.emf.ecore.EObject;
 import org.springframework.web.socket.TextMessage;

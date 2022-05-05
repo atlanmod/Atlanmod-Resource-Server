@@ -1,4 +1,4 @@
-package org.atlanmod.karadoc.core.Filter;
+package org.atlanmod.karadoc.core.filter;
 
 public class FilterID {
     String uri;

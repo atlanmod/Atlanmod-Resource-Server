@@ -1,6 +1,6 @@
 package org.atlanmod.karadoc.rmi;
 
-import org.atlanmod.karadoc.core.Filter.FilterID;
+import org.atlanmod.karadoc.core.filter.FilterID;
 import org.eclipse.emf.common.util.URI;
 
 import java.rmi.Remote;

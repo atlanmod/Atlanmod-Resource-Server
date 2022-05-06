@@ -3,8 +3,8 @@ package org.atlanmod.karadoc.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.atlanmod.karadoc.core.filter.FilterID;
 import org.atlanmod.karadoc.core.ResourceService;
+import org.atlanmod.karadoc.core.filter.FilterID;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.emfjson.jackson.module.EMFModule;
@@ -29,7 +29,7 @@ public class KaradocRestController {
 
     @GetMapping("v1/getAvailableResources")
     public String getAllResources() throws JsonProcessingException {
-        return mapper.writeValueAsString( server.getAvailableResourced());
+        return mapper.writeValueAsString( server.getAvailableResources());
     }
 
     @GetMapping("v1/get")

@@ -12,7 +12,7 @@ public class GetAll implements ModelCommand{
     @Override
     public void execute(ExecutionContext ctx, WebSocketSession session) {
         try {
-            List<EObject> availableResource = ctx.getServer().getAvailableResourced();
+            List<EObject> availableResource = ctx.getServer().getAvailableResources();
             String payload = ctx.getMapper().writeValueAsString(availableResource);
             session.sendMessage(new TextMessage(payload));
         } catch (IOException e) {

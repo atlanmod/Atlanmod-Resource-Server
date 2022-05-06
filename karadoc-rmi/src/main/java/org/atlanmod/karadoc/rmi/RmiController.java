@@ -2,8 +2,8 @@ package org.atlanmod.karadoc.rmi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.atlanmod.karadoc.core.filter.FilterID;
 import org.atlanmod.karadoc.core.ResourceService;
+import org.atlanmod.karadoc.core.filter.FilterID;
 import org.eclipse.emf.common.util.URI;
 import org.emfjson.jackson.module.EMFModule;
 import org.slf4j.Logger;
@@ -48,7 +48,7 @@ public class RmiController extends UnicastRemoteObject implements RmiResourceSer
     public String getAvailableResourced() throws RemoteException {
         try {
             assert server != null;
-            return mapper.writeValueAsString(server.getAvailableResourced());
+            return mapper.writeValueAsString(server.getAvailableResources());
         } catch (JsonProcessingException e) {
             return null;
         }

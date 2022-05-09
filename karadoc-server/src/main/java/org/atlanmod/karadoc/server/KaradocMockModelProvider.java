@@ -2,7 +2,6 @@ package org.atlanmod.karadoc.server;
 
 import org.atlanmod.karadoc.core.ModelProvider;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -27,7 +26,8 @@ import java.util.Collections;
 public class KaradocMockModelProvider implements ModelProvider {
 
     private final static Logger log = LoggerFactory.getLogger(KaradocMockModelProvider.class);
-
+    public static final String GRAPH_METAMODEL_ECORE = "Coffee.ecore";
+    public static final String MODEL_GRAPH = "SuperBrewer3000.graph";
 
 
     private final ResourceSet resourceSet;
@@ -48,8 +48,8 @@ public class KaradocMockModelProvider implements ModelProvider {
         try {
 
             //load dummy file
-            File metamodel = new ClassPathResource("graph_metamodel.ecore").getFile();
-            File model = new ClassPathResource("graph_model.graph").getFile();
+            File metamodel = new ClassPathResource(GRAPH_METAMODEL_ECORE).getFile();
+            File model = new ClassPathResource(MODEL_GRAPH).getFile();
 
             //load metamodel
             this.metamodel = this.resourceSet.createResource(URI.createURI(metamodel.getName()));
@@ -103,39 +103,4 @@ public class KaradocMockModelProvider implements ModelProvider {
             }
         }
     }
-
-
-    //Todo remove this debug method and logger
-    private static void logMetamodelInformation(Resource metamodelResource) {
-        Iterable<EObject> allContents = metamodelResource::getAllContents;
-        for (EObject e : allContents) {
-            if (e instanceof EClass) {
-                EClass eClass = (EClass) e;
-                log.info("EClass {}", eClass.getName());
-                eClass.getEAllAttributes()
-                        .forEach(eAttribute -> log.info("\tAttribute {} (type={})", eAttribute.getName(),
-                                eAttribute.getEType().getName()));
-                eClass.getEAllReferences()
-                        .forEach(eReference -> log.info("\tReference {} (type={})", eReference.getName(),
-                                eReference.getEType().getName()));
-            }
-        }
-    }
-
-    //Todo remove this debug method and logger
-    private static void logModelInformation(Resource model) {
-        Iterable<EObject> allContents = model::getAllContents;
-        for (EObject e : allContents) {
-            log.info("Instance of {}", e.eClass().getName());
-            e.eClass().getEAllAttributes()
-                    .forEach(eAttribute -> log.info("\tAttribute '{}' = {}", eAttribute.getName(), e.eGet(eAttribute)));
-            /*
-             * Here the logs will probably contain some weird serialization of EMF objects, because we are dealing
-             * with references from one object to another.
-             */
-            e.eClass().getEAllReferences()
-                    .forEach(eReference -> log.info("\tReference '{}' = {}", eReference.getName(), e.eGet(eReference)));
-        }
-    }
-
 }

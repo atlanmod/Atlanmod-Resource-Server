@@ -50,14 +50,12 @@ public class KaradocService implements ResourceService {
 
     @Override
     public EObject getModelElementByName(String modelUri, String elementname) {
-        Resource resource = resourceSet.getResource(URI.createURI(modelUri), true);
-        return resource.getEObject(elementname);
+        return null;
     }
 
     @Override
     public boolean delete(String modelUri) {
-        Resource resource = resourceSet.getResource(URI.createURI(modelUri), true);
-        return resourceSet.getResources().remove(resource);
+        return resourceSet.getResources().remove(this.get(modelUri));
     }
 
     @Override
@@ -87,7 +85,7 @@ public class KaradocService implements ResourceService {
 
     @Override
     public boolean ping() {
-        return false;
+        return true;
     }
 
     @Override

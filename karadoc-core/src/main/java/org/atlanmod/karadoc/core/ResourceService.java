@@ -15,7 +15,7 @@ public interface ResourceService {
      */
     Resource get(String modelUri);
 
-    //Todo remove because we everything is serialized to json
+    //Todo: remove because we everything is serialized to json
     //EObject get(String modelUri, String format);
 
     /**
@@ -24,7 +24,7 @@ public interface ResourceService {
      */
     List<Resource> getAll();
 
-    //Todo remove because we everything is serialized to json
+    //Todo: remove because we everything is serialized to json
     //EList<Resource> getAll(String format);
 
     /**
@@ -93,7 +93,7 @@ public interface ResourceService {
      */
     boolean saveAll();
 
-    //Todo: Find out what this is supposed to do
+    //Todo: Find out what this is supposed to do o_o
 //    /**
 //     * ?????
 //     * @param modelUri the uri of the model to validate

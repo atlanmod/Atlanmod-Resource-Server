@@ -32,7 +32,7 @@ public class KaradocService implements ResourceService {
     }
 
     @Override
-    public Resource get(String modelUri) {
+    public Resource getModel(String modelUri) {
         return resourceSet.getResource(URI.createURI(modelUri), true);
     }
 
@@ -42,10 +42,17 @@ public class KaradocService implements ResourceService {
     }
 
     @Override
-    public List<Resource> getModelUris() {
-        List<Resource> list = new ArrayList<>();
-        resourceSet.getResources().listIterator().forEachRemaining(list::add);
+    public List<String> getModelUris() {
+        List<String> list = new ArrayList<>();
+        for (Resource res: resourceSet.getResources()) {
+            list.add(res.getURI().toString());
+        }
         return list;
+    }
+
+    @Override
+    public Resource getMetaModel() {
+        return modelProvider.getMetamodel();
     }
 
     @Override
@@ -55,7 +62,7 @@ public class KaradocService implements ResourceService {
 
     @Override
     public boolean delete(String modelUri) {
-        return resourceSet.getResources().remove(this.get(modelUri));
+        return resourceSet.getResources().remove(this.getModel(modelUri));
     }
 
     @Override
@@ -80,7 +87,19 @@ public class KaradocService implements ResourceService {
 
     @Override
     public boolean saveAll() {
-        return false;
+
+            boolean succesFlag = true;
+
+            for(Resource res : resourceSet.getResources()){
+                try {
+                    res.save(Collections.emptyMap());
+                } catch (IOException e) {
+                    succesFlag = false;
+                }
+            }
+
+            return succesFlag;
+
     }
 
     @Override

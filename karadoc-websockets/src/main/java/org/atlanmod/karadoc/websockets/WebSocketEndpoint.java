@@ -49,7 +49,7 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
         users.add(session);
 
         //synchronise current model
-        session.sendMessage(new TextMessage(mapper.writeValueAsString(karadocServer.getAvailableResources())));
+        //session.sendMessage(new TextMessage(mapper.writeValueAsString(karadocServer.getAvailableResources())));
     }
 
     @Override

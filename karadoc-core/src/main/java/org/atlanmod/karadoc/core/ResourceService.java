@@ -13,7 +13,7 @@ public interface ResourceService {
      * @param modelUri model uri
      * @return the model
      */
-    Resource get(String modelUri);
+    Resource getModel(String modelUri);
 
     //Todo: remove because we everything is serialized to json
     //EObject get(String modelUri, String format);
@@ -32,7 +32,9 @@ public interface ResourceService {
      *
      * @return A list of all the models uri
      */
-    List<Resource> getModelUris();
+    List<String> getModelUris();
+
+    Resource getMetaModel();
 
 
     //Does not exist on our model. Use uri instead

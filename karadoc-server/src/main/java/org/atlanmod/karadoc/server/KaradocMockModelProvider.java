@@ -27,7 +27,7 @@ public class KaradocMockModelProvider implements ModelProvider {
 
     private final static Logger log = LoggerFactory.getLogger(KaradocMockModelProvider.class);
     public static final String GRAPH_METAMODEL_ECORE = "Coffee.ecore";
-    public static final String MODEL_GRAPH = "SuperBrewer3000.graph";
+    public static final String MODEL_GRAPH = "SuperBrewer3000.coffee";
 
 
     private final ResourceSet resourceSet;
@@ -44,6 +44,9 @@ public class KaradocMockModelProvider implements ModelProvider {
         resourceSet.getResourceFactoryRegistry()
                 .getExtensionToFactoryMap()
                 .put("graph", new XMIResourceFactoryImpl());
+        resourceSet.getResourceFactoryRegistry()
+                .getExtensionToFactoryMap()
+                .put("coffee", new XMIResourceFactoryImpl());
 
         try {
 

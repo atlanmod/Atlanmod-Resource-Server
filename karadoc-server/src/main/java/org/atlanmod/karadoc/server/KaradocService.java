@@ -1,12 +1,18 @@
 package org.atlanmod.karadoc.server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.atlanmod.karadoc.core.ModelProvider;
 import org.atlanmod.karadoc.core.ResourceService;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.emfjson.jackson.databind.EMFContext;
+import org.emfjson.jackson.module.EMFModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Server internal api for endpoint
@@ -23,46 +30,58 @@ public class KaradocService implements ResourceService {
 
 
     private final ModelProvider modelProvider;
-    private final ResourceSet resourceSet;
+    private static final ObjectMapper jsonMapper = EMFModule.setupDefaultMapper();
+    private static final Logger log = LoggerFactory.getLogger(KaradocService.class);
 
     @Autowired
     public KaradocService(ModelProvider modelProvider) {
         this.modelProvider = modelProvider;
-        resourceSet = modelProvider.getResourceSet();
     }
 
     @Override
     public Resource getModel(String modelUri) {
-        return resourceSet.getResource(URI.createURI(modelUri), true);
+        return modelProvider.getResourceSet().getResource(URI.createURI(modelUri), true);
     }
 
     @Override
     public EList<Resource> getAll() {
-        return resourceSet.getResources();
+        return modelProvider.getResourceSet().getResources();
     }
 
     @Override
     public List<String> getModelUris() {
         List<String> list = new ArrayList<>();
-        for (Resource res: resourceSet.getResources()) {
+        for (Resource res: modelProvider.getResourceSet().getResources()) {
             list.add(res.getURI().toString());
         }
         return list;
     }
 
     @Override
-    public Resource getMetaModel() {
-        return modelProvider.getMetamodel();
-    }
-
-    @Override
     public EObject getModelElementByName(String modelUri, String elementname) {
-        return null;
+
+        //NOTE: Very slow way to get an instance by name since we enumerate all the attributes
+        // in the resource-set.
+
+        for(Resource resource :  modelProvider.getResourceSet().getResources()) {
+            Iterable<EObject> allContents = resource::getAllContents;
+            for (EObject obj : allContents) {
+                for (EAttribute eAttribute : obj.eClass().getEAllAttributes()) {
+                    if (eAttribute.getName().equals("name")) {
+                        String name = (String) obj.eGet(eAttribute);
+                        if (name.equals(elementname))
+                            return obj;
+                    }
+                }
+            }
+        }
+        throw new NoSuchElementException("no element named " + elementname + " found");
     }
 
     @Override
     public boolean delete(String modelUri) {
-        return resourceSet.getResources().remove(this.getModel(modelUri));
+        log.info("deleting {}", modelUri);
+        return modelProvider.getResourceSet().getResources().remove(this.getModel(modelUri));
     }
 
     @Override
@@ -71,8 +90,20 @@ public class KaradocService implements ResourceService {
     }
 
     @Override
-    public boolean create(String modelUri, Resource model) {
-        return false;
+    public boolean create(String modelUri, String modelAsJSON) {
+        try {
+            jsonMapper.reader()
+                    .withAttribute(EMFContext.Attributes.RESOURCE_SET, this.modelProvider.getResourceSet())
+                    .withAttribute(EMFContext.Attributes.RESOURCE_URI, URI.createURI(modelUri))
+                    .forType(Resource.class)
+                    .readValue(modelAsJSON);
+            return true;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return false;
+
+        }
+
     }
 
     @Override
@@ -82,23 +113,31 @@ public class KaradocService implements ResourceService {
 
     @Override
     public void save(String modelUri) throws IOException {
-        resourceSet.getResource(URI.createURI(modelUri), true).save(Collections.emptyMap());
+        modelProvider.getResourceSet().getResource(URI.createURI(modelUri), true).save(Collections.emptyMap());
+        log.info("saved {}", modelUri);
     }
 
     @Override
     public boolean saveAll() {
 
-            boolean succesFlag = true;
+            boolean successFlag = true;
 
-            for(Resource res : resourceSet.getResources()){
+            for(Resource res : modelProvider.getResourceSet().getResources()){
                 try {
                     res.save(Collections.emptyMap());
                 } catch (IOException e) {
-                    succesFlag = false;
+                    e.printStackTrace();
+                    successFlag = false;
                 }
             }
 
-            return succesFlag;
+            if(successFlag){
+                log.info("saved all resources successfully");
+            }else {
+                log.info("Save completed with error!");
+            }
+
+            return successFlag;
 
     }
 

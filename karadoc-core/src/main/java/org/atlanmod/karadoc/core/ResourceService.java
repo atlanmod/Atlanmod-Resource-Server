@@ -34,9 +34,6 @@ public interface ResourceService {
      */
     List<String> getModelUris();
 
-    Resource getMetaModel();
-
-
     //Does not exist on our model. Use uri instead
     //EObject getModelElementById(String modelUri, String elementid);
 
@@ -72,10 +69,11 @@ public interface ResourceService {
      * @param model the new model to create. It must be an instance of the loaded metamodel
      * @return a boolean true if the model was added.
      */
-    boolean create(String modelUri, Resource model);
+    boolean create(String modelUri, String modelAsJSON);
 
     //Todo remove because we everything is serialized to json
     //Resource update(String modelUri, String updatedModelAsJsonText);
+
 
 
     // Todo remove because we everything is serialized to json

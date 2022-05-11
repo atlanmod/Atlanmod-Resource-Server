@@ -65,7 +65,7 @@ public class KaradocRestController {
     }
 
     @GetMapping(BASEPATH + "save")
-    public void save(@RequestParam(name = "URI") String modelUri) throws IOException {
+    public void save(@RequestParam(name = "modeluri") String modelUri) throws IOException {
             server.save(modelUri);
     }
 
@@ -76,18 +76,23 @@ public class KaradocRestController {
 
     @GetMapping(BASEPATH + "server/ping")
     public boolean ping() {
-        return false;
+        return server.ping();
     }
 
+    @GetMapping(BASEPATH + "unsubscribe")
     public boolean unsubscribe(String modelUri) {
         return false;
     }
 
+    @GetMapping(BASEPATH + "undo")
     public Resource undo(String modelUri) {
-        return null;
+        throw new UnsupportedOperationException("undo is not supported for the REST endpoint." +
+                " Consider using websocket or java rmi");
     }
 
+    @GetMapping(BASEPATH + "redo")
     public Resource redo(String modelUri) {
-        return null;
+        throw new UnsupportedOperationException("redo is not supported for the REST endpoint." +
+                " Consider using websocket or java rmi");
     }
 }

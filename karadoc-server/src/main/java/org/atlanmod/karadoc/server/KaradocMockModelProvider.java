@@ -8,8 +8,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -25,14 +23,12 @@ import java.util.Collections;
 @Component("ModelProvider")
 public class KaradocMockModelProvider implements ModelProvider {
 
-    private final static Logger log = LoggerFactory.getLogger(KaradocMockModelProvider.class);
     public static final String GRAPH_METAMODEL_ECORE = "Coffee.ecore";
     public static final String MODEL_GRAPH = "SuperBrewer3000.coffee";
 
 
     private final ResourceSet resourceSet;
     private final Resource metamodel;
-    Resource model;
 
 
     public KaradocMockModelProvider() {
@@ -51,28 +47,28 @@ public class KaradocMockModelProvider implements ModelProvider {
         try {
 
             //load dummy file
-            File metamodel = new ClassPathResource(GRAPH_METAMODEL_ECORE).getFile();
-            File model = new ClassPathResource(MODEL_GRAPH).getFile();
+            File metamodelFile = new ClassPathResource(GRAPH_METAMODEL_ECORE).getFile();
+            File modelFile = new ClassPathResource(MODEL_GRAPH).getFile();
 
             //load metamodel
-            this.metamodel = this.resourceSet.createResource(URI.createURI(metamodel.getName()));
+            this.metamodel = this.resourceSet.createResource(URI.createURI(metamodelFile.getName()));
             if (this.metamodel == null) {
                 throw new RuntimeException("Cannot create the resource for the metamodel");
             }
 
-            FileInputStream inputStream = new FileInputStream(metamodel);
+            FileInputStream inputStream = new FileInputStream(metamodelFile);
             this.metamodel.load(inputStream, Collections.emptyMap());
             inputStream.close();
             registerEPackages(resourceSet, this.metamodel);
 
             //then load model based on previously loaded metamodel
-            this.model = this.resourceSet.createResource(URI.createURI(model.getName()));
-            if (this.model == null) {
+            Resource model = this.resourceSet.createResource(URI.createURI(modelFile.getName()));
+            if (model == null) {
                 throw new RuntimeException("Cannot create the resource for the metamodel");
             }
 
-            FileInputStream inputStream1 = new FileInputStream(model);
-            this.model.load(inputStream1, Collections.emptyMap());
+            FileInputStream inputStream1 = new FileInputStream(modelFile);
+            model.load(inputStream1, Collections.emptyMap());
             inputStream1.close();
 
         } catch (IOException e) {
@@ -87,14 +83,11 @@ public class KaradocMockModelProvider implements ModelProvider {
     }
 
     @Override
-    public Resource getMetamodel() {
-        return metamodel;
+    public Resource get(URI uri) {
+        return resourceSet.getResource(uri,false);
     }
 
-    @Override
-    public Resource getModel() {
-        return model;
-    }
+
 
 
     private static void registerEPackages(ResourceSet rSet, Resource metamodel) {

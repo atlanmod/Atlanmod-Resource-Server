@@ -2,16 +2,13 @@ package org.atlanmod.karadoc.rest;
 
 
 import org.atlanmod.karadoc.core.ResourceService;
+import org.atlanmod.karadoc.core.Response;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,69 +26,73 @@ public class KaradocRestController {
 
 
     @GetMapping(BASEPATH + "models")
-    public List<Resource> getModel(@RequestParam(name = "modeluri", required = false, defaultValue = "undefined") String modelUri) {
-        if(modelUri.equals("undefined"))
+    //TODO: find a better way to return different type in the endpoint
+    public Response<?> getModel(@RequestParam(name = "modeluri", required = false) String modelUri) {
+        //Get all if no model uri are given
+        if(modelUri == null)
             return server.getAll();
-        ArrayList<Resource> resourcesList = new ArrayList<>();
-        resourcesList.add(server.getModel(modelUri));
-        return resourcesList;
+
+        //Or return te resource associated to the uri
+        return server.getModel(modelUri);
     }
 
     @GetMapping(BASEPATH + "modeluris")
-    public List<String> getModelUris() {
+    public Response<List<String>> getModelUris() {
         return server.getModelUris();
     }
 
     @GetMapping(BASEPATH + "modelelement")
-    public EObject getModelElementByName(@RequestParam(name = "modeluri") String modelUri, @RequestParam(name = "elementname") String elementname) {
+    public Response<EObject> getModelElementByName(@RequestParam(name = "modeluri") String modelUri, @RequestParam(name = "elementname") String elementname) {
         return server.getModelElementByName(modelUri, elementname);
     }
 
-    @GetMapping(BASEPATH + "delete")
-    public boolean delete(@RequestParam("modeluri") String modelUri) {
+    @DeleteMapping(BASEPATH + "delete")
+    public Response<Boolean> delete(@RequestParam("modeluri") String modelUri) {
         return server.delete(modelUri);
     }
 
-    public boolean close(String modelUri) {
-        return false;
+    @GetMapping(BASEPATH + "close")
+    public Response<Boolean> close(@RequestParam("modeluri") String modelUri) {
+        return server.close(modelUri);
     }
 
-    public boolean create(String modelUri, Resource model) {
-        return false;
+    @PostMapping(BASEPATH + "models")
+    public Response<Boolean> create(@RequestParam("modeluri") String modelUri, @RequestParam("updatedModelAsJson") String modelAsJSON) {
+        return server.create(modelUri,modelAsJSON);
     }
 
-    public Resource update(String modelUri, Resource updatedModel) {
-        return null;
+    @PatchMapping(BASEPATH + "models")
+    public Response<Boolean> update(@RequestParam("modeluri") String modelUri, @RequestParam("updatedModelAsJson") String updatedModelAsJson) {
+        return server.update(modelUri, updatedModelAsJson);
     }
 
     @GetMapping(BASEPATH + "save")
-    public void save(@RequestParam(name = "modeluri") String modelUri) throws IOException {
-            server.save(modelUri);
-    }
+    public Response<Boolean> save(@RequestParam(name = "modeluri") String modelUri) {return server.save(modelUri);}
 
     @GetMapping(BASEPATH + "saveall")
-    public boolean saveAll() {
+    public Response<Boolean> saveAll() {
         return server.saveAll();
     }
 
     @GetMapping(BASEPATH + "server/ping")
-    public boolean ping() {
+    public Response<Boolean> ping() {
         return server.ping();
     }
 
     @GetMapping(BASEPATH + "unsubscribe")
-    public boolean unsubscribe(String modelUri) {
-        return false;
+    public Response<Boolean> unsubscribe(@RequestParam(name = "modeluri") String modelUri) {
+        throw new UnsupportedOperationException("unsubscribe is not supported for the REST endpoint." +
+                " Consider using websocket or java rmi");
     }
 
     @GetMapping(BASEPATH + "undo")
-    public Resource undo(String modelUri) {
+    public Response<Resource> undo(@RequestParam(name = "modeluri") String modelUri) {
         throw new UnsupportedOperationException("undo is not supported for the REST endpoint." +
                 " Consider using websocket or java rmi");
     }
 
     @GetMapping(BASEPATH + "redo")
-    public Resource redo(String modelUri) {
+    public  Response<Resource> redo(@RequestParam(name = "modeluri") String modelUri) {
         throw new UnsupportedOperationException("redo is not supported for the REST endpoint." +
                 " Consider using websocket or java rmi");
     }

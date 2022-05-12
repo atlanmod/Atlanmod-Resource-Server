@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.atlanmod.karadoc.core.ModelProvider;
 import org.atlanmod.karadoc.core.ResourceService;
+import org.atlanmod.karadoc.core.Response;
+import org.atlanmod.karadoc.core.ResponseType;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
@@ -11,6 +13,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.emfjson.jackson.databind.EMFContext;
 import org.emfjson.jackson.module.EMFModule;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 /**
  * Server internal api for endpoint
@@ -29,36 +32,51 @@ import java.util.NoSuchElementException;
 public class KaradocService implements ResourceService {
 
 
+    private static final String COULD_NOT_RESOLVE_URI = "Could not resolve URI {}";
     private final ModelProvider modelProvider;
     private static final ObjectMapper jsonMapper = EMFModule.setupDefaultMapper();
     private static final Logger log = LoggerFactory.getLogger(KaradocService.class);
 
+    private boolean isModelURI(String uri){
+        return modelProvider.getResourceSet().getResource(URI.createURI(uri),false) != null;
+    }
+    
     @Autowired
     public KaradocService(ModelProvider modelProvider) {
         this.modelProvider = modelProvider;
     }
 
     @Override
-    public Resource getModel(String modelUri) {
-        return modelProvider.getResourceSet().getResource(URI.createURI(modelUri), true);
-    }
-
-    @Override
-    public EList<Resource> getAll() {
-        return modelProvider.getResourceSet().getResources();
-    }
-
-    @Override
-    public List<String> getModelUris() {
-        List<String> list = new ArrayList<>();
-        for (Resource res: modelProvider.getResourceSet().getResources()) {
-            list.add(res.getURI().toString());
+    public Response<Resource> getModel(String modelUri) {
+        
+        if (!isModelURI(modelUri)){
+            log.warn(COULD_NOT_RESOLVE_URI, modelUri);
+            return new Response<>(ResponseType.URINOTRESOLVEDERROR, null);
         }
-        return list;
+        @NotNull
+        Resource resource = modelProvider.getResourceSet().getResource(URI.createURI(modelUri), false);
+        return new Response<>(ResponseType.SUCCESS, resource);
     }
 
     @Override
-    public EObject getModelElementByName(String modelUri, String elementname) {
+    public Response<List<Resource>> getAll() {
+        return new Response<>(ResponseType.SUCCESS,
+                new ArrayList<>(modelProvider.getResourceSet().getResources()));
+    }
+
+    @Override
+    public Response<List<String>> getModelUris() {
+
+        return new Response<>(ResponseType.SUCCESS,
+                modelProvider.getResourceSet().getResources()
+                .stream().map(resource -> resource.getURI().toString()).collect(Collectors.toList())
+        );
+
+
+    }
+
+    @Override
+    public Response<EObject> getModelElementByName(String modelUri, String elementname) {
 
         //NOTE: Very slow way to get an instance by name since we enumerate all the attributes
         // in the resource-set.
@@ -70,55 +88,96 @@ public class KaradocService implements ResourceService {
                     if (eAttribute.getName().equals("name")) {
                         String name = (String) obj.eGet(eAttribute);
                         if (name.equals(elementname))
-                            return obj;
+                            return new Response<>(ResponseType.SUCCESS, obj);
                     }
                 }
             }
         }
-        throw new NoSuchElementException("no element named " + elementname + " found");
+        return new Response<>(ResponseType.URINOTRESOLVEDERROR, null);
+    }
+    
+
+
+    @Override
+    public Response<Boolean> close(String modelUri) {
+        return new Response<>(ResponseType.PLACEHOLDER,false);
     }
 
     @Override
-    public boolean delete(String modelUri) {
+    public Response<Boolean> delete(String modelUri) {
+
+        if (!isModelURI(modelUri)){
+            log.warn(COULD_NOT_RESOLVE_URI, modelUri);
+            return new Response<>(ResponseType.URINOTRESOLVEDERROR, null);
+        }
+
+        @NotNull
+        Resource resource = modelProvider.getResourceSet().getResource(URI.createURI(modelUri), false);
+
         log.info("deleting {}", modelUri);
-        return modelProvider.getResourceSet().getResources().remove(this.getModel(modelUri));
+
+        EList<Resource> resources = modelProvider.getResourceSet().getResources();
+        return new Response<>(ResponseType.SUCCESS, resources.remove(resource));
     }
 
     @Override
-    public boolean close(String modelUri) {
-        return false;
-    }
+    public Response<Boolean> create(String modelUri, String modelAsJSON) {
 
-    @Override
-    public boolean create(String modelUri, String modelAsJSON) {
+        if(isModelURI(modelUri)){
+            log.warn("URI already exist for {}", modelUri);
+            return new Response<>(ResponseType.MODELALREADYEXIST);
+        }
+
         try {
             jsonMapper.reader()
                     .withAttribute(EMFContext.Attributes.RESOURCE_SET, this.modelProvider.getResourceSet())
                     .withAttribute(EMFContext.Attributes.RESOURCE_URI, URI.createURI(modelUri))
                     .forType(Resource.class)
                     .readValue(modelAsJSON);
-            return true;
+            return new Response<>(ResponseType.SUCCESS, true);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            return false;
+            return new Response<>(ResponseType.INVALIDJSONERROR);
+        }
 
+    }
+
+
+
+    @Override
+    public Response<Boolean> update(String modelUri, String updatedModel) {
+
+        if (!isModelURI(modelUri)){
+            log.warn(COULD_NOT_RESOLVE_URI, modelUri);
+            return new Response<>(ResponseType.URINOTRESOLVEDERROR, null);
+        }
+
+
+        //FIXME: fragile way to reuse code because it does not account
+        // for possible error handling done in the called method
+        // even though all case should already been taken care of.
+        delete(modelUri);
+        create(modelUri,updatedModel);
+        return new Response<>(ResponseType.SUCCESS);
+        
+    }
+
+    @Override
+    public Response<Boolean> save(String modelUri)  {
+        try {
+            modelProvider.getResourceSet().getResource(URI.createURI(modelUri), true).save(Collections.emptyMap());
+            log.info("saved {}", modelUri);
+            return new Response<>(ResponseType.SUCCESS, true);
+        }catch (IOException e){
+            log.info("could not save {}. See detail below", modelUri);
+            e.printStackTrace();
+            return new Response<>(ResponseType.FILEACCESSERROR, false);
         }
 
     }
 
     @Override
-    public Resource update(String modelUri, Resource updatedModel) {
-        return null;
-    }
-
-    @Override
-    public void save(String modelUri) throws IOException {
-        modelProvider.getResourceSet().getResource(URI.createURI(modelUri), true).save(Collections.emptyMap());
-        log.info("saved {}", modelUri);
-    }
-
-    @Override
-    public boolean saveAll() {
+    public Response<Boolean> saveAll() {
 
             boolean successFlag = true;
 
@@ -133,31 +192,31 @@ public class KaradocService implements ResourceService {
 
             if(successFlag){
                 log.info("saved all resources successfully");
+                return new Response<>(ResponseType.SUCCESS, true);
             }else {
-                log.info("Save completed with error!");
+                log.info("Save completed with error! See stacktrace above");
+                return new Response<>(ResponseType.FILEACCESSERROR, false);
             }
 
-            return successFlag;
-
     }
 
     @Override
-    public boolean ping() {
-        return true;
+    public Response<Boolean> ping() {
+        return new Response<>(ResponseType.SUCCESS);
     }
 
     @Override
-    public boolean unsubscribe(String modelUri) {
-        return false;
-    }
-
-    @Override
-    public Resource undo(String modelUri) {
+    public  Response<Boolean> unsubscribe(String modelUri) {
         return null;
     }
 
     @Override
-    public Resource redo(String modelUri) {
+    public  Response<Resource> undo(String modelUri) {
+        return null;
+    }
+
+    @Override
+    public Response<Resource> redo(String modelUri) {
         return null;
     }
 }

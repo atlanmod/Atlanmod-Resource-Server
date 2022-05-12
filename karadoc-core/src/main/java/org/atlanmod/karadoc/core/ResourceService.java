@@ -3,7 +3,6 @@ package org.atlanmod.karadoc.core;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface ResourceService {
@@ -13,32 +12,21 @@ public interface ResourceService {
      * @param modelUri model uri
      * @return the model
      */
-    Resource getModel(String modelUri);
+    Response<Resource> getModel(String modelUri);
 
-    //Todo: remove because we everything is serialized to json
-    //EObject get(String modelUri, String format);
 
     /**
      * Get all the resource in the resource set
      * @return the List of all resource
      */
-    List<Resource> getAll();
-
-    //Todo: remove because we everything is serialized to json
-    //EList<Resource> getAll(String format);
+    Response<List<Resource>> getAll();
 
     /**
      * Get all the model and return there uri
      *
      * @return A list of all the models uri
      */
-    List<String> getModelUris();
-
-    //Does not exist on our model. Use uri instead
-    //EObject getModelElementById(String modelUri, String elementid);
-
-    //Does not exist in our model. Use uri instead
-    //EObject getModelElementById(String modelUri, String elementid, String format);
+    Response<List<String>> getModelUris();
 
     /**
      * Get element by name
@@ -46,7 +34,7 @@ public interface ResourceService {
      * @param elementname name of the object
      * @return the object found. Null of none
      */
-    EObject getModelElementByName(String modelUri, String elementname);
+    Response<EObject> getModelElementByName(String modelUri, String elementname);
 
 
     /**
@@ -54,48 +42,47 @@ public interface ResourceService {
      * @param modelUri the id the model to delete
      * @return a boolean true if the removal succeeded.
      */
-    boolean delete(String modelUri);
+    Response<Boolean> delete(String modelUri);
 
     /**
-     * FIXME i have no idea what is supposed to do
-     * @param modelUri
-     * @return
+     * Close a model wihout saving it's content to the disk
+     * @param modelUri model to close
+     * @return a boolean representing the status of the operation
      */
-    boolean close(String modelUri);
+    Response<Boolean> close(String modelUri);
 
     /**
      * Create a new model
      * @param modelUri the uri of the new model
-     * @param model the new model to create. It must be an instance of the loaded metamodel
+     * @param modelAsJSON the new model to create as a json string. It must be an instance of the loaded metamodel
      * @return a boolean true if the model was added.
      */
-    boolean create(String modelUri, String modelAsJSON);
+    Response<Boolean> create(String modelUri, String modelAsJSON);
 
-    //Todo remove because we everything is serialized to json
-    //Resource update(String modelUri, String updatedModelAsJsonText);
-
-
-
-    // Todo remove because we everything is serialized to json
-    //boolean create(String modelUri, Resource createdModel, String format);
-    Resource update(String modelUri, Resource updatedModel);
+    /**
+     * Replace a model with the new given model. Throw a runtime error if no model to replace is found
+     * @param modelUri the URI of the model to replace
+     * @param updatedModel the model tu use instead as a json string
+     * @return a boolean true if the operation succeeded
+     */
+    Response<Boolean> update(String modelUri, String updatedModel);
 
     /**
      * Save model to server disk
      *
      * @param modelUri the uri of the model to save
      */
-    void save(String modelUri) throws IOException;
+    Response<Boolean> save(String modelUri) ;
 
     /**
-     * Save all the model (aka the resourceSet)
+     * Save all the models in the resourceset
      * @return a boolean true if all the models were saved.
      */
-    boolean saveAll();
+    Response<Boolean> saveAll();
 
-    //Todo: Find out what this is supposed to do o_o
+
 //    /**
-//     * ?????
+//     *
 //     * @param modelUri the uri of the model to validate
 //     * @return yes
 //     */
@@ -115,7 +102,7 @@ public interface ResourceService {
      * Ping the model
      * @return pong
      */
-    boolean ping();
+    Response<Boolean> ping();
 
     //CompletableFuture<Response<String>> edit(String modelUri, CCommand command, String format);
 
@@ -142,7 +129,7 @@ public interface ResourceService {
 //
 //    void subscribe(String modelUri, SubscriptionListener subscriptionListener, SubscriptionOptions options);
 
-    // Todo: remove this, i don't know what this is supposed to do.
+    // Todo: implement this
    // boolean send(String modelUri, String message);
 
     /**
@@ -150,19 +137,19 @@ public interface ResourceService {
      * @param modelUri the model to unsubscribe
      * @return a boolean true if the operation succeeded
      */
-    boolean unsubscribe(String modelUri);
+    Response<Boolean> unsubscribe(String modelUri);
 
     /**
      * Undo last modification on the model
      * @param modelUri the uri of the model on witch to perform the undo
      * @return the modified resource
      */
-    Resource undo(String modelUri);
+    Response<Resource> undo(String modelUri);
 
     /**
      * Redo last modification on the model
      * @param modelUri the uri of the model on witch to perform the undo
      * @return the modified resource
      */
-    Resource redo(String modelUri);
+    Response<Resource> redo(String modelUri);
 }

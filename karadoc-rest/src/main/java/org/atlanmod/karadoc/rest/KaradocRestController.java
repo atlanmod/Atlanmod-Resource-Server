@@ -46,12 +46,12 @@ public class KaradocRestController {
         return server.getModelElementByName(modelUri, elementname);
     }
 
-    @DeleteMapping(BASEPATH + "delete")
+    @DeleteMapping(BASEPATH + "models")
     public Response<Boolean> delete(@RequestParam("modeluri") String modelUri) {
         return server.delete(modelUri);
     }
 
-    @GetMapping(BASEPATH + "close")
+    @PostMapping(BASEPATH + "close")
     public Response<Boolean> close(@RequestParam("modeluri") String modelUri) {
         return server.close(modelUri);
     }
@@ -61,7 +61,7 @@ public class KaradocRestController {
         return server.create(modelUri,modelAsJSON);
     }
 
-    @PatchMapping(BASEPATH + "models")
+    @PutMapping(BASEPATH + "models")
     public Response<Boolean> update(@RequestParam("modeluri") String modelUri, @RequestParam("updatedModelAsJson") String updatedModelAsJson) {
         return server.update(modelUri, updatedModelAsJson);
     }
@@ -83,6 +83,11 @@ public class KaradocRestController {
     public Response<Boolean> unsubscribe(@RequestParam(name = "modeluri") String modelUri) {
         throw new UnsupportedOperationException("unsubscribe is not supported for the REST endpoint." +
                 " Consider using websocket or java rmi");
+    }
+
+    @PatchMapping(BASEPATH + "models")
+    public Response<Boolean>  executeCommands(@RequestParam(name = "modeluri") String uri){
+        return null;
     }
 
     @GetMapping(BASEPATH + "undo")

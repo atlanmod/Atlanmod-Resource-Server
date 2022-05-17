@@ -67,6 +67,9 @@ public interface ResourceService {
      */
     Response<Boolean> update(String modelUri, String updatedModel);
 
+    Response<String> edit(String modelUri, String jsonPatchAsString, String format);
+
+
     /**
      * Save model to server disk
      *
@@ -152,4 +155,5 @@ public interface ResourceService {
      * @return the modified resource
      */
     Response<Resource> redo(String modelUri);
+
 }

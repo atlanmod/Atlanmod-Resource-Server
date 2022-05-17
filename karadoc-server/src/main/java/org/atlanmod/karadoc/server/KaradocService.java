@@ -71,8 +71,6 @@ public class KaradocService implements ResourceService {
                 modelProvider.getResourceSet().getResources()
                 .stream().map(resource -> resource.getURI().toString()).collect(Collectors.toList())
         );
-
-
     }
 
     @Override
@@ -100,7 +98,18 @@ public class KaradocService implements ResourceService {
 
     @Override
     public Response<Boolean> close(String modelUri) {
-        return new Response<>(ResponseType.PLACEHOLDER,false);
+
+        if (!isModelURI(modelUri)){
+            log.warn(COULD_NOT_RESOLVE_URI, modelUri);
+            return new Response<>(ResponseType.URINOTRESOLVEDERROR, null);
+        }
+        @NotNull
+        Resource resource = modelProvider.getResourceSet().getResource(URI.createURI(modelUri), false);
+
+        log.info("closing {}", modelUri);
+
+        EList<Resource> resources = modelProvider.getResourceSet().getResources();
+        return new Response<>(ResponseType.SUCCESS, resources.remove(resource));
     }
 
     @Override
@@ -117,6 +126,7 @@ public class KaradocService implements ResourceService {
         log.info("deleting {}", modelUri);
 
         EList<Resource> resources = modelProvider.getResourceSet().getResources();
+        modelProvider.delete(URI.createURI(modelUri));
         return new Response<>(ResponseType.SUCCESS, resources.remove(resource));
     }
 
@@ -154,12 +164,17 @@ public class KaradocService implements ResourceService {
 
 
         //FIXME: fragile way to reuse code because it does not account
-        // for possible error handling done in the called method
-        // even though all case should already been taken care of.
+        // for possible error thrown in the called method
+        // even though all cases should already been check
         delete(modelUri);
         create(modelUri,updatedModel);
         return new Response<>(ResponseType.SUCCESS);
         
+    }
+
+    @Override
+    public Response<String> edit(String modelUri, String jsonPatchAsString, String format) {
+        return null;
     }
 
     @Override
@@ -197,7 +212,6 @@ public class KaradocService implements ResourceService {
                 log.info("Save completed with error! See stacktrace above");
                 return new Response<>(ResponseType.FILEACCESSERROR, false);
             }
-
     }
 
     @Override

@@ -3,7 +3,6 @@ package org.atlanmod.karadoc.websockets;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.atlanmod.karadoc.core.ResourceService;
-import org.atlanmod.karadoc.server.KaradocMockModelProvider;
 import org.atlanmod.karadoc.websockets.command.ExecutionContext;
 import org.atlanmod.karadoc.websockets.command.ModelCommand;
 import org.emfjson.jackson.module.EMFModule;
@@ -28,7 +27,7 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
      */
     private final ResourceService karadocServer;
 
-    private final static Logger log = LoggerFactory.getLogger(KaradocMockModelProvider.class);
+    private static final  Logger log = LoggerFactory.getLogger(WebSocketEndpoint.class);
     /**
      * Mapper used for serializing and deserializing EMF objects
      */
@@ -49,7 +48,7 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
         users.add(session);
 
         //synchronise current model
-        //session.sendMessage(new TextMessage(mapper.writeValueAsString(karadocServer.getAvailableResources())));
+        //session.sendMessage(new TextMessage(mapper.writeValueAsString(karadocServer.geAll())));
     }
 
     @Override
@@ -66,7 +65,9 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
 
         try {
             ModelCommand command = mapper.readValue(message.getPayload(), ModelCommand.class);
-            command.execute(executionContext, session);
+            String payload = mapper.writeValueAsString(command.execute(executionContext));
+            session.sendMessage(new TextMessage(payload));
+
 
         }catch (JsonProcessingException processingException){
             log.error(processingException.getMessage());

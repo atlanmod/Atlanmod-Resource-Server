@@ -8,4 +8,7 @@ public interface ModelProvider {
     ResourceSet getResourceSet();
 
     Resource get(URI uri);
+
+    boolean delete(URI uri);
+
 }

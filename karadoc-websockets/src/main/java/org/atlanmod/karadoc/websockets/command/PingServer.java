@@ -1,17 +1,16 @@
 package org.atlanmod.karadoc.websockets.command;
 
-import org.atlanmod.karadoc.server.KaradocMockModelProvider;
+import org.atlanmod.karadoc.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.socket.WebSocketSession;
 
 public class PingServer implements ModelCommand{
 
-    private final static Logger log = LoggerFactory.getLogger(KaradocMockModelProvider.class);
+    private static final Logger log = LoggerFactory.getLogger(PingServer.class);
 
     @Override
-    public void execute(ExecutionContext ctx, WebSocketSession session) {
-         log.info("ping");
+    public Response<Boolean> execute(ExecutionContext ctx) {
+         return ctx.getServer().ping();
     }
 
 }

@@ -87,8 +87,11 @@ public class KaradocMockModelProvider implements ModelProvider {
         return resourceSet.getResource(uri,false);
     }
 
-
-
+    @Override
+    public boolean delete(URI uri) {
+        //TODO: Implement file remove method
+        return false;
+    }
 
     private static void registerEPackages(ResourceSet rSet, Resource metamodel) {
         Iterable<EObject> allContents = metamodel::getAllContents;

@@ -11,8 +11,7 @@ import org.atlanmod.karadoc.core.Response;
         property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = PingServer.class, name = "Ping"),
-        @JsonSubTypes.Type(value = GetAll.class, name = "GetAll"),
-        @JsonSubTypes.Type(value = GetResource.class, name = "GetResource") })
+        @JsonSubTypes.Type(value = GetAll.class, name = "GetAll")})
 public interface ModelCommand {
 
     Response<?> execute(ExecutionContext ctx);

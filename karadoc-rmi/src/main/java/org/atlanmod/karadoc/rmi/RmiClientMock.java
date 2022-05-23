@@ -38,7 +38,7 @@ public class RmiClientMock {
 //                    .forType(Resource.class)
 //                            .readValue(access.getAvailableResourced());
 
-            log.info("Res" + " " + access.getAvailableResourced());
+            log.info("Res" + " " + access);
         }
 
 }

@@ -11,9 +11,8 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 
 
@@ -23,7 +22,13 @@ import java.util.Collections;
 @Component("ModelProvider")
 public class KaradocMockModelProvider implements ModelProvider {
 
+    /**
+     * Name of the ecore file. Also used as model URI
+     */
     public static final String GRAPH_METAMODEL_ECORE = "Coffee.ecore";
+    /**
+     * Name of the model instance. Also used as model URI
+     */
     public static final String MODEL_GRAPH = "SuperBrewer3000.coffee";
 
 
@@ -47,29 +52,27 @@ public class KaradocMockModelProvider implements ModelProvider {
         try {
 
             //load dummy file
-            File metamodelFile = new ClassPathResource(GRAPH_METAMODEL_ECORE).getFile();
-            File modelFile = new ClassPathResource(MODEL_GRAPH).getFile();
+            InputStream metamodelInputStream = new ClassPathResource(GRAPH_METAMODEL_ECORE).getInputStream();
+            InputStream modelInputStream = new ClassPathResource(MODEL_GRAPH).getInputStream();
 
             //load metamodel
-            this.metamodel = this.resourceSet.createResource(URI.createURI(metamodelFile.getName()));
+            this.metamodel = this.resourceSet.createResource(URI.createURI(GRAPH_METAMODEL_ECORE));
             if (this.metamodel == null) {
                 throw new RuntimeException("Cannot create the resource for the metamodel");
             }
 
-            FileInputStream inputStream = new FileInputStream(metamodelFile);
-            this.metamodel.load(inputStream, Collections.emptyMap());
-            inputStream.close();
+            this.metamodel.load(metamodelInputStream, Collections.emptyMap());
+            metamodelInputStream.close();
             registerEPackages(resourceSet, this.metamodel);
 
             //then load model based on previously loaded metamodel
-            Resource model = this.resourceSet.createResource(URI.createURI(modelFile.getName()));
+            Resource model = this.resourceSet.createResource(URI.createURI(MODEL_GRAPH));
             if (model == null) {
                 throw new RuntimeException("Cannot create the resource for the metamodel");
             }
 
-            FileInputStream inputStream1 = new FileInputStream(modelFile);
-            model.load(inputStream1, Collections.emptyMap());
-            inputStream1.close();
+            model.load(modelInputStream, Collections.emptyMap());
+            modelInputStream.close();
 
         } catch (IOException e) {
             throw new RuntimeException(e);

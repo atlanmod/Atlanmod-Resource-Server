@@ -1,8 +1,20 @@
 = Karadoc
 
-The Atlanmod-Resource-Server
+== Overview
 
-[cite, Jean-Christophe Hembert, Kaamelott, Livre II, Sept cent quarante-quatre, écrit par Alexandre Astier.]
-____
-Par exemple, vous prenez aujourd’hui. Vous comptez sept jours. Ça vous emmène dans une semaine. Et bien on sera exactement le même jour qu’aujourd’hui… À une vache près, hein… C’est pas une science exacte.
-____
+The Atlanmod-Resource-Server is an attempt to bring collaborative editing to web based EMF editor.
+It features 3 endpoint: HTTP REST, WebSocket, Java RMI, and an API based on https://github.com/eclipse-emfcloud/emfcloud-modelserver[EMF.CLOUD modelserver]. Unfortunately, this approach was not successful as it fails to propagate change between users.
+
+Notes: since to the REST api being stateless, some functionalities are not available on this endpoint.
+
+== Quickstart
+Each endpoint is as standalone application can be run as an executable jar.
+
+Compile the project by running this command on the root folder of the project.
+----
+mvn clean package
+----
+The generated jar can then be found under the Target folder of their submodule and be run with
+----
+java -Dfile.encoding=UTF8 -jar <path to the jar file>
+----

@@ -1,6 +1,7 @@
 package org.atlanmod.karadoc.websockets;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.atlanmod.karadoc.core.ResourceService;
 import org.atlanmod.karadoc.websockets.command.ExecutionContext;
@@ -32,6 +33,13 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
      * Mapper used for serializing and deserializing EMF objects
      */
     private final ObjectMapper mapper = EMFModule.setupDefaultMapper();
+    {
+        mapper.configure(
+                JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(),
+                true
+        );
+    }
+
     private final Collection<WebSocketSession> users = new HashSet<>();
     private final ExecutionContext executionContext;
 
@@ -65,8 +73,13 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
 
         try {
             ModelCommand command = mapper.readValue(message.getPayload(), ModelCommand.class);
-            String payload = mapper.writeValueAsString(command.execute(executionContext));
-            session.sendMessage(new TextMessage(payload));
+            command.execute(executionContext);
+
+            for (WebSocketSession user: users) {
+                if (!user.equals(session)) {
+                    user.sendMessage(message);
+                }
+            }
 
 
         }catch (JsonProcessingException processingException){

@@ -2,8 +2,13 @@
 
 == Overview
 
-The Atlanmod-Resource-Server is an attempt to bring collaborative editing to web based EMF editor.
-It features 3 endpoint: HTTP REST, WebSocket, Java RMI, and an API based on https://github.com/eclipse-emfcloud/emfcloud-modelserver[EMF.CLOUD modelserver]. Unfortunately, this approach was not successful as it fails to propagate change between users.
+The Atlanmod-Resource-Server is an attempt to bring collaborative editing to https://www.eclipse.org/emfcloud/[EMF.CLOUD]. 
+It use https://en.wikipedia.org/wiki/Optimistic_replication[optimistic replication] and feature 2 main server.
+
+* A model server for client joining a collaborative session using a HTTP REST API. 
+* A broad server client message based on web socket.
+
+This project is incomplete as only the operation propagation is implemented
 
 Notes: since to the REST api being stateless, some functionalities are not available on this endpoint.
 
